@@ -1,6 +1,17 @@
-import { Text, View } from "react-native";
+import { axiosInstance } from "@/lib/axios";
+import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 
-export default function Index() {
+export default async function Index() {
+  const [message, setMessage] = useState("Hello");
+
+  useEffect(() => {
+    fetchMessage()
+      .then((message) => setMessage(message))
+      .catch(console.error);
+  }, []);
+
   return (
     <View
       style={{
@@ -9,7 +20,13 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Link href={"/onboarding"}>{message}</Link>
     </View>
   );
+}
+
+async function fetchMessage() {
+  const response = await axiosInstance.get("/");
+  const data = response.data;
+  return data.message;
 }
